@@ -1,0 +1,3 @@
+[submodule "ppCurve"]
+	path = ppCurve
+	url = https://github.com/LackWiz/ppCurve.git
