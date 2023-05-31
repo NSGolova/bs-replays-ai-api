@@ -1,6 +1,6 @@
 from data_processing import get_map_info
 from infer_publish import getMapAccForHits, predictHitsForMap, scaleFarmability
-from tech_calc import mapCalculation
+from ppCurve.Tech_Calculator.tech_calc import mapCalculation
 
 from setup_flask import app
 from setup_flask import cache
