@@ -113,7 +113,7 @@ def V3_3_0_to_V3(V3_0_0mapData: dict):
         newMapData['obstacles'][i]['w'] = newMapData['obstacles'][i].get('w', 0)
         newMapData['obstacles'][i]['h'] = newMapData['obstacles'][i].get('h', 0)
 
-    # for i in range(0, len(newMapData['sliders'])):    Arcs not implemented in the also, so just leave it out.
+    # for i in range(0, len(newMapData['sliders'])):    Arcs not implemented in the algo, so just leave it out.
     #     newMapData['sliders'][i]['b'] = newMapData['sliders'][i].get('b', 0)
     #     newMapData['sliders'][i]['c'] = newMapData['sliders'][i].get('c', 0)
     #     newMapData['sliders'][i]['x'] = newMapData['sliders'][i].get('x', 0)
