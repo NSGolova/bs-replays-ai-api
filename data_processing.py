@@ -201,10 +201,10 @@ def get_note_direction(direction, angle):
 def get_map_notes_from_json(map_json, bpm_time_scale):
     if "version" in map_json and map_json["version"].split(".")[0] == "3":
         map_notes = sorted(list(map(lambda n: (n["b"]*bpm_time_scale, f"{n['x']}{n['y']}{get_note_direction(n['d'], n['a'])}{n['c']}"), filter(
-                            lambda n: n['c'] == 1 or n['c'] == 0, map_json["colorNotes"]))), key=lambda x: (x[0], x[1]))
+                            lambda n: (n['c'] == 1 or n['c'] == 0) and 1000 > n['x'] >= 0 and 1000 > n['y'] >= 0, map_json["colorNotes"]))), key=lambda x: (x[0], x[1]))
     else:
         map_notes = sorted(list(map(lambda n: (n["_time"]*bpm_time_scale, f"{n['_lineIndex']}{n['_lineLayer']}{n['_cutDirection']}{n['_type']}"), filter(
-                            lambda n: n['_type'] == 1 or n['_type'] == 0, map_json["_notes"]))), key=lambda x: (x[0], x[1]))
+                            lambda n: (n['_type'] == 1 or n['_type'] == 0) and 1000 > n['_lineIndex'] >= 0 and 1000 > n['_lineLayer'] >= 0, map_json["_notes"]))), key=lambda x: (x[0], x[1]))
     return map_notes
 
 
@@ -294,7 +294,7 @@ def get_map_data(hash, characteristic, difficulty):
         songName = map_info["_songName"]
 
         for beatmap_set in map_info["_difficultyBeatmapSets"]:
-            if beatmap_set["_beatmapCharacteristicName"] != characteristic:
+            if beatmap_set["_beatmapCharacteristicName"].replace(" ", "") != characteristic:
                 continue
 
             for beatmap in beatmap_set["_difficultyBeatmaps"]:
