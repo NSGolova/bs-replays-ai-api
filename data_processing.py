@@ -2,6 +2,9 @@ from http_client import download_map
 import numpy as np
 import glob
 import json
+import copy
+from packaging.version import parse
+from collections import deque
 
 
 maps_dir = "/home/maps"
@@ -212,7 +215,65 @@ def get_free_points_for_map(map_json):
     else:
         return 0
 
+def V3_3_0_to_V3(V3_0_0mapData: dict):
+    newMapData = copy.deepcopy(V3_0_0mapData)
+    for i in range(0, len(newMapData['bpmEvents'])):
+        newMapData['bpmEvents'][i]['b'] = newMapData['bpmEvents'][i].get('b', 0)
+        newMapData['bpmEvents'][i]['m'] = newMapData['bpmEvents'][i].get('m', 0)
 
+    # for i in range(0, len(newMapData['rotationEvents'])): Used for lighting
+    #     newMapData['rotationEvents'][i]['b'] = newMapData['rotationEvents'][i].get('b', 0)
+    #     newMapData['rotationEvents'][i]['e'] = newMapData['rotationEvents'][i].get('e', 0)
+    #     newMapData['rotationEvents'][i]['r'] = newMapData['rotationEvents'][i].get('r', 0)
+
+    for i in range(0, len(newMapData['colorNotes'])):
+        newMapData['colorNotes'][i]['b'] = newMapData['colorNotes'][i].get('b', 0)
+        newMapData['colorNotes'][i]['x'] = newMapData['colorNotes'][i].get('x', 0)
+        newMapData['colorNotes'][i]['y'] = newMapData['colorNotes'][i].get('y', 0)
+        newMapData['colorNotes'][i]['a'] = newMapData['colorNotes'][i].get('a', 0)
+        newMapData['colorNotes'][i]['c'] = newMapData['colorNotes'][i].get('c', 0)
+        newMapData['colorNotes'][i]['d'] = newMapData['colorNotes'][i].get('d', 0)
+    
+    for i in range(0, len(newMapData['bombNotes'])):
+        newMapData['bombNotes'][i]['b'] = newMapData['bombNotes'][i].get('b', 0)
+        newMapData['bombNotes'][i]['x'] = newMapData['bombNotes'][i].get('x', 0)
+        newMapData['bombNotes'][i]['y'] = newMapData['bombNotes'][i].get('y', 0)
+    
+    for i in range(0, len(newMapData['obstacles'])):
+        newMapData['obstacles'][i]['b'] = newMapData['obstacles'][i].get('b', 0)
+        newMapData['obstacles'][i]['x'] = newMapData['obstacles'][i].get('x', 0)
+        newMapData['obstacles'][i]['y'] = newMapData['obstacles'][i].get('y', 0)
+        newMapData['obstacles'][i]['d'] = newMapData['obstacles'][i].get('d', 0)
+        newMapData['obstacles'][i]['w'] = newMapData['obstacles'][i].get('w', 0)
+        newMapData['obstacles'][i]['h'] = newMapData['obstacles'][i].get('h', 0)
+
+    # for i in range(0, len(newMapData['sliders'])):    Arcs not implemented in the algo, so just leave it out.
+    #     newMapData['sliders'][i]['b'] = newMapData['sliders'][i].get('b', 0)
+    #     newMapData['sliders'][i]['c'] = newMapData['sliders'][i].get('c', 0)
+    #     newMapData['sliders'][i]['x'] = newMapData['sliders'][i].get('x', 0)
+    #     newMapData['sliders'][i]['y'] = newMapData['sliders'][i].get('y', 0)
+    #     newMapData['sliders'][i]['d'] = newMapData['sliders'][i].get('d', 0)
+    #     newMapData['sliders'][i]['mu'] = newMapData['sliders'][i].get('mu', 0)
+    #     newMapData['sliders'][i]['tb'] = newMapData['sliders'][i].get('tb', 0)
+    #     newMapData['sliders'][i]['tx'] = newMapData['sliders'][i].get('tx', 0)
+    #     newMapData['sliders'][i]['ty'] = newMapData['sliders'][i].get('ty', 0)
+    #     newMapData['sliders'][i]['tc'] = newMapData['sliders'][i].get('tc', 0)
+    #     newMapData['sliders'][i]['tmu'] = newMapData['sliders'][i].get('tmu', 0)
+    #     newMapData['sliders'][i]['m'] = newMapData['sliders'][i].get('m', 0)
+
+    for i in range(0, len(newMapData['burstSliders'])):
+        newMapData['burstSliders'][i]['b'] = newMapData['burstSliders'][i].get('b', 0)
+        newMapData['burstSliders'][i]['c'] = newMapData['burstSliders'][i].get('c', 0)
+        newMapData['burstSliders'][i]['x'] = newMapData['burstSliders'][i].get('x', 0)
+        newMapData['burstSliders'][i]['y'] = newMapData['burstSliders'][i].get('y', 0)
+        newMapData['burstSliders'][i]['d'] = newMapData['burstSliders'][i].get('d', 0)
+        newMapData['burstSliders'][i]['tb'] = newMapData['burstSliders'][i].get('tb', 0)
+        newMapData['burstSliders'][i]['tx'] = newMapData['burstSliders'][i].get('tx', 0)
+        newMapData['burstSliders'][i]['ty'] = newMapData['burstSliders'][i].get('ty', 0)
+        newMapData['burstSliders'][i]['sc'] = newMapData['burstSliders'][i].get('sc', 8)
+        newMapData['burstSliders'][i]['s'] = newMapData['burstSliders'][i].get('s', 1)
+
+    return newMapData
 def get_map_data(hash, characteristic, difficulty):
     if characteristic is None:
         characteristic = "Standard"
@@ -243,6 +304,8 @@ def get_map_data(hash, characteristic, difficulty):
                     with open(map_info_file.replace("Info.dat", map_file_name).replace("info.dat", map_file_name), "r", encoding="utf8", errors="ignore") as map_file:
                         map_file_content = map_file.read()
                         map_json = json.loads(map_file_content)
+                        if "version" in map_json and parse(map_json["version"]) > parse("3.2.0"):
+                            map_json = V3_3_0_to_V3(map_json)
                         map_notes = get_map_notes_from_json(map_json, bpm_time_scale)
                         free_points = get_free_points_for_map(map_json)
 
