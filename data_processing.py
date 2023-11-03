@@ -339,7 +339,7 @@ def get_map_info(hash, characteristic, difficulty):
         bpm = map_info["_beatsPerMinute"]
 
         for beatmap_set in map_info["_difficultyBeatmapSets"]:
-            if beatmap_set["_beatmapCharacteristicName"] != characteristic:
+            if beatmap_set["_beatmapCharacteristicName"].replace(" ", "") != characteristic:
                 continue
 
             for beatmap in beatmap_set["_difficultyBeatmaps"]:
