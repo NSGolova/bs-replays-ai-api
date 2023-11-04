@@ -44,6 +44,9 @@ def get_bl_ratings(hash, characteristic, diff, timescale):
 
     map_info = get_map_info(hash.lower(), characteristic, int(diff))
     lack_map_calculation = mapCalculation(map_info["map_json"], map_info["bpm"] * float(timescale), False, False)
+    temp = lack_map_calculation['balanced_pass'] ** (timescale / 14 + 1.005) / 1.26
+    if temp > lack_map_calculation['balanced_pass']:
+        lack_map_calculation['balanced_pass'] = temp
     return { "lack_map_calculation": lack_map_calculation, "AIacc": AIacc }
 
 
