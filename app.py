@@ -16,7 +16,7 @@ def index():
     return "hi"
 
 
-@app.route('/<hash>/<characteristic>/<diff>')
+@app.route('/ppai/<hash>/<characteristic>/<diff>')
 def api_get_ratings(hash, characteristic, diff):
     modifiers = [
         ["SS", "0.85"],
